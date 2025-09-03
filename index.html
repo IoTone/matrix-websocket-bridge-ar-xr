@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minimal WS to Matrix Chat</title>
+</head>
+<body>
+  <h1>Minimal WS to Matrix Chat</h1>
+  <section class="chat">
+    <ul class="output"></ul>
+    <form>
+      <textarea placeholder="Type a message…" name="msg"></textarea>
+      <br><input placeholder="Your name" name="nickname">
+      <br><button type="submit">Send</button>
+    </form>
+  </section>
+
+  <script>
+    function WsMatrixChat(WS_URL) {
+      const chat = document.querySelector("section.chat");
+      const form = chat.querySelector("form")
+      const form_elements = chat.querySelectorAll("textarea, input, button")
+      const output = chat.querySelector(".output");
+      const textarea = chat.querySelector("textarea");
+      const input_elements = chat.querySelectorAll("textarea, input")
+
+      let ws = null;
+      let isOpen = false;
+      let appendMessageCallback = null
+
+      function setAvailable(available) {
+        isOpen = !!available;
+        chat.classList.toggle("available", available);
+        chat.classList.toggle("disabled", !available);
+        for(const e of form_elements) e.disabled = !available;
+      }
+
+      function appendMessage(data, cls) {
+        const li = document.createElement("li");
+        li.className = cls;
+        // Use textContent to avoid HTML injection
+        console.log("appendMessage", data, cls)
+        appendMessageCallback && appendMessageCallback(data, cls)
+        li.textContent = data.nickname + " WRITES: " + data.msg;
+        output.appendChild(li);
+        output.scrollTop = output.scrollHeight;
+      }
+
+      function whenAppendMessage(callback) {
+        appendMessageCallback = callback
+      }
+
+      function sendMessage() {
+        if (!isOpen) return;
+        // collect data
+        const formData = new FormData(form);
+        const obj = {};
+        for (const [key, value] of formData.entries()) obj[key] = value;
+        const json = JSON.stringify(obj);
+        ws.send(json)
+        appendMessage(obj, "sent");
+      }
+
+      function handleSubmit(event) {
+        const text = textarea.value;
+        if (!text.trim()) return;
+        sendMessage();
+        textarea.value = "";
+        textarea.focus();
+
+        event.preventDefault() // avoid page reloading
+      }
+
+      form.addEventListener("submit", handleSubmit);
+
+      input_elements.forEach(elem => elem.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault(); // Enter submits
+          handleSubmit(e);
+        }
+        // in textarea, Shift+Enter falls through to insert newline
+      }))
+
+      /** WebSocket lifecycle (also acts as health check on load) */
+      function connect() {
+        try {
+          ws = new WebSocket(WS_URL);
+
+          ws.addEventListener("open", () => setAvailable(true))
+          ws.addEventListener("message", (evt) => appendMessage(JSON.parse(String(evt.data)), "recv"))
+          ws.addEventListener("close", () => setAvailable(false))
+          ws.addEventListener("error", () => setAvailable(false))
+        } catch (err) {
+          setAvailable(false);
+        }
+      }
+
+      // Cleanly close on page unload
+      window.addEventListener("beforeunload", () => {
+        try { ws && ws.close(); } catch (_) {}
+      });
+
+      // Initial health check: attempt connection
+      setAvailable(false);
+      connect();
+
+      return { appendMessage, whenAppendMessage }
+    }
+
+    (function () {
+      const WS_URL = "ws://localhost:8081/ws";
+      const chat = WsMatrixChat(WS_URL)
+
+      // setup a browser-local "agent" which acts on the messages
+
+      const unreachable_timeout_sec = 5
+      
+      var isFirstMessage = true, gotAnyReply = false
+      chat.whenAppendMessage((data, dir) => {
+        if(dir == "recv") {
+          gotAnyReply = true
+        } else if(dir == "sent") {
+          if(isFirstMessage) {
+            setTimeout(() => {
+              if(!gotAnyReply) {
+                console.log("Ring ring, but nobody takes up")
+                chat.appendMessage({
+                  nickname: "agent",
+                  msg: "Nobody picks up, apparently"
+                }, "agent")
+              }
+            }, unreachable_timeout_sec * 1000)
+          }
+          isFirstMessage = false
+        }
+      })
+      
+    })();
+  </script>
+</body>
+</html>
