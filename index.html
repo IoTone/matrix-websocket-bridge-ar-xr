@@ -87,7 +87,13 @@
           ws = new WebSocket(WS_URL);
 
           ws.addEventListener("open", () => setAvailable(true))
-          ws.addEventListener("message", (evt) => appendMessage(JSON.parse(String(evt.data)), "recv"))
+          // ws.addEventListener("message", (evt) => appendMessage(JSON.parse(String(evt.data)), "recv"))
+          ws.addEventListener("message", (evt) => {
+            console.log(evt);
+            appendMessage(JSON.parse(String(evt.data)), "recv")
+            // notifyTitle()
+            // playPling()
+          })
           ws.addEventListener("close", () => setAvailable(false))
           ws.addEventListener("error", () => setAvailable(false))
         } catch (err) {
@@ -108,12 +114,12 @@
     }
 
     (function () {
-      const WS_URL = "ws://localhost:8081/ws";
+      const WS_URL = "ws://localhost:18081/ws";
       const chat = WsMatrixChat(WS_URL)
 
       // setup a browser-local "agent" which acts on the messages
 
-      const unreachable_timeout_sec = 5
+      const unreachable_timeout_sec = 25
       
       var isFirstMessage = true, gotAnyReply = false
       chat.whenAppendMessage((data, dir) => {
@@ -125,9 +131,9 @@
               if(!gotAnyReply) {
                 console.log("Ring ring, but nobody takes up")
                 chat.appendMessage({
-                  nickname: "agent",
+                  nickname: "bot agent",
                   msg: "Nobody picks up, apparently"
-                }, "agent")
+                }, "bot agent")
               }
             }, unreachable_timeout_sec * 1000)
           }

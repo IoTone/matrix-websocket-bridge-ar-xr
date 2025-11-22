@@ -79,7 +79,7 @@ func main() {
 		for {
 			_, data_raw, err := ws.ReadMessage()
 			if err != nil {
-				// log.Printf("ws read: %v", err) // typically just some connection closed
+				log.Printf("ws read: %v", err) // typically just some connection closed
 				break
 			}
 			var data WebSocketMessage
@@ -137,10 +137,12 @@ func main() {
 	syncer.OnEventType(event.EventMessage, func(_ context.Context, ev *event.Event) {
 		// Only events from our target room
 		if ev.RoomID != roomID {
+			log.Infof("can't receive from other room %s", ev.RoomID)
 			return
 		}
 		// Optional: only accept from a specific sender (e.g., you)
 		if allowedSender != "" && ev.Sender.String() != allowedSender {
+			log.Infof("can't received from unallowed sender %s", ev.Sender.String())
 			return
 		}
 

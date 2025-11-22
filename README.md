@@ -21,7 +21,7 @@ export MATRIX_HOMESERVER="https://matrix-client.matrix.org"
 export MATRIX_USER="@your-bot-user-account:matrix.org"
 export MATRIX_TOKEN="this is secret"
 export TARGET_ROOM="!whateversecretid:matrix.org"
-
+export ALLOWED_SENDER="@your-agent-user:matrix.org"
 go run .
 ```
 
@@ -52,8 +52,8 @@ instance by spawning a python-included webserver with
 Note that the golang server upgrades any connection attempt at 
 any URL path to a websocket because it is intended to be used within
 some revproxy setting. Head over to
-https://github.com/svenk/www-svenk.org/tree/main/src/chat
-to see how I am using this on my website.
+https://github.com/svenk/www-svenk.org/tree/main/src/chat 
+to see how I am using this on my website found here: https://www.svenk.org/chat/.
 
 Written by SvenK, code licensed as CC0
 
