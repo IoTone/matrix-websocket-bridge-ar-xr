@@ -25,6 +25,8 @@ export ALLOWED_SENDER="@your-agent-user:matrix.org"
 go run .
 ```
 
+Note: ALLOWED_SENDER is optional.
+
 Generate the long living login token with such a script:
 
 ```
@@ -55,5 +57,20 @@ some revproxy setting. Head over to
 https://github.com/svenk/www-svenk.org/tree/main/src/chat 
 to see how I am using this on my website found here: https://www.svenk.org/chat/.
 
-Written by SvenK, code licensed as CC0
+## JS Library
 
+As mentioned above, the original source example is here: 
+	https://github.com/svenk/www-svenk.org/tree/main/src/chat 
+
+The client code "client.js" has been incorporated into this repo in the subdirectory lib.  
+ 
+## Snap Spectacles UX
+
+Compatible with Spectacles 24.  See subfolder.  It will leverage the JS library mentioned in the previous section, and will port it for snap spectacles.  The spectacles version of this example is intended as a prototype to demonstrate alteratnives for decentralized messaging. The fact we can communicate with a room, we can ask a real person to reply, or we can build an interesting set of distributed AI / bot applications.
+ 
+## XR UX
+
+Leverage THreeJS.  It lives in the XR subdirectory and should be compatible with Quest 3, AVP, Frame, or Spectacles.
+
+Written by SvenK, code licensed as CC0
+XR/AR portions by IoTone, Inc.
