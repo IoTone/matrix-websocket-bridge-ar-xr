@@ -1,0 +1,59 @@
+- !<AssetImportMetadata/83657f0e-4fcc-4b22-a290-1eb6f749269a>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 84400a7e-e091-4fd6-8697-cc196f159a04
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 84400a7e-e091-4fd6-8697-cc196f159a04
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> ec807ed0-61cc-4882-82fe-59de48194773
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/ec807ed0-61cc-4882-82fe-59de48194773>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 3c7e315c-4eb6-4b86-a252-d049030d1dc3
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    chatPanel: false
+    clearToggleCapsule: false
+    connStats: false
+    connStatusText: false
+    connectToggleCapsule: false
+    sendToggleCapsule: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - connectToggleCapsule: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      sendToggleCapsule: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      clearToggleCapsule: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      chatPanel: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      connStatusText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      connStats: !<reference.Text> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType connectToggleCapsule
+    - // @input AssignableType_1 sendToggleCapsule
+    - // @input AssignableType_2 clearToggleCapsule
+    - // @input AssignableType_3 chatPanel
+    - // @input Component.Text connStatusText
+    - // @input Component.Text connStats

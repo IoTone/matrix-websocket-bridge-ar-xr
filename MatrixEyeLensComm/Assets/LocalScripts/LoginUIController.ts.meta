@@ -1,0 +1,83 @@
+- !<AssetImportMetadata/5377eb93-a12d-4c5e-87b4-5e888542e2bc>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> a117d9a2-94b6-42bf-8ea8-e39d0bb0414a
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> a117d9a2-94b6-42bf-8ea8-e39d0bb0414a
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> cfdde6c8-0cff-407f-a347-b4d1e9049b71
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/cfdde6c8-0cff-407f-a347-b4d1e9049b71>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 3c7e315c-4eb6-4b86-a252-d049030d1dc3
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    backspcButtonCapsule: false
+    clearButtonCapsule: false
+    eightButtonCapsule: false
+    fiveButtonCapsule: false
+    fourButtonCapsule: false
+    loginPanel: false
+    nineButtonCapsule: false
+    oneButtonCapsule: false
+    passwordTextHidden: false
+    sevenButtonCapsule: false
+    sixButtonCapsule: false
+    threeButtonCapsule: false
+    twoButtonCapsule: false
+    zeroButtonCapsule: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - oneButtonCapsule: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      twoButtonCapsule: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      threeButtonCapsule: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      fourButtonCapsule: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      fiveButtonCapsule: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
+      sixButtonCapsule: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
+      sevenButtonCapsule: !<MappingBased.AssignableType_6> 00000000-0000-0000-0000-000000000000
+      eightButtonCapsule: !<MappingBased.AssignableType_7> 00000000-0000-0000-0000-000000000000
+      nineButtonCapsule: !<MappingBased.AssignableType_8> 00000000-0000-0000-0000-000000000000
+      zeroButtonCapsule: !<MappingBased.AssignableType_9> 00000000-0000-0000-0000-000000000000
+      clearButtonCapsule: !<MappingBased.AssignableType_10> 00000000-0000-0000-0000-000000000000
+      backspcButtonCapsule: !<MappingBased.AssignableType_11> 00000000-0000-0000-0000-000000000000
+      passwordTextHidden: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      loginPanel: !<MappingBased.AssignableType_12> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType oneButtonCapsule
+    - // @input AssignableType_1 twoButtonCapsule
+    - // @input AssignableType_2 threeButtonCapsule
+    - // @input AssignableType_3 fourButtonCapsule
+    - // @input AssignableType_4 fiveButtonCapsule
+    - // @input AssignableType_5 sixButtonCapsule
+    - // @input AssignableType_6 sevenButtonCapsule
+    - // @input AssignableType_7 eightButtonCapsule
+    - // @input AssignableType_8 nineButtonCapsule
+    - // @input AssignableType_9 zeroButtonCapsule
+    - // @input AssignableType_10 clearButtonCapsule
+    - // @input AssignableType_11 backspcButtonCapsule
+    - // @input Component.Text passwordTextHidden
+    - // @input AssignableType_12 loginPanel

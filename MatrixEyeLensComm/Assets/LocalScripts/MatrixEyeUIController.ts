@@ -1,0 +1,95 @@
+import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
+import {PinchButton} from "SpectaclesInteractionKit.lspkg/Components/UI/PinchButton/PinchButton"
+import {ToggleButton} from "SpectaclesInteractionKit.lspkg/Components/UI/ToggleButton/ToggleButton"
+import {ContainerFrame} from "SpectaclesInteractionKit.lspkg/Components/UI/ContainerFrame/ContainerFrame"
+
+export enum LoginStatusCode {
+    Success = 0x00, 
+    NotLoggedIn = 0x10,
+    AuthenticationFailure  = 0x11,
+    UnspecifiedError = 0x80
+}
+
+export enum ConnectionStatusCode {
+    Connected = 0x00, 
+    NotConnected = 0x10,
+    ConnectionFailure  = 0x11,
+    NetworkTimeoutFailure  = 0x12,
+    AuthenticationFailure  = 0x13,
+    UnspecifiedError = 0x80
+}
+
+@component
+export class MatrixEyeUIController extends BaseScriptComponent {
+    @input
+    connectToggleCapsule!: ToggleButton
+    @input
+    sendToggleCapsule!: PinchButton
+    @input
+    clearToggleCapsule!: PinchButton
+    @input
+    chatPanel: ContainerFrame
+    @input
+    connStatusText: Text
+    @input
+    connStats: Text
+
+    private timeoutInterval: DelayedCallbackEvent | null = null
+    private configPasswordRequiredLength = 3;
+    private loginStatus = LoginStatusCode.NotLoggedIn;
+    private connectionStatus = ConnectionStatusCode.NotConnected;
+    
+    // TODO: implement a session model
+    
+    onAwake() {
+        print("onAwake()");
+        
+        this.createEvent("OnStartEvent").bind(() => {
+            this.onStart()
+        })
+
+        // TODO refactor
+        this.timeoutInterval = this.createEvent("DelayedCallbackEvent");
+        const somecb = (): void => {
+            print("password mask timeout CB complete");
+            
+        };
+        this.timeoutInterval.bind(somecb);
+    }
+
+    onStart() {
+        // TODO: Refactor into a better handler
+        // https://developers.snap.com/lens-studio/api/lens-scripting/classes/Packages_SpectaclesInteractionKit_Components_UI_PinchButton_PinchButton.PinchButton.html#onbuttonpinched
+        this.connectToggleCapsule.onStateChanged.add(
+            () => {
+                if (this.connectToggleCapsule.isToggledOn) {
+                    globalThis.textLogger.log("connectToggleCapsule ON");
+                } else {
+                    globalThis.textLogger.log("connectToggleCapsule OFF");
+                }
+                
+            },
+        );
+        this.clearToggleCapsule.onButtonPinched.add(
+            () => {
+                globalThis.textLogger.log("clearToggleCapsule");  
+            },
+        );
+        this.sendToggleCapsule.onButtonPinched.add(
+            () => {
+                globalThis.textLogger.log("sendToggleCapsule");  
+            },
+        );
+    }
+
+    //
+    // Network Comms
+    //
+
+    //
+    // Accessors
+    //
+
+
+    
+}
