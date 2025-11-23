@@ -70,7 +70,16 @@ Compatible with Spectacles 24.  See subfolder.  It will leverage the JS library 
  
 ## XR UX
 
-Leverage THreeJS.  It lives in the XR subdirectory and should be compatible with Quest 3, AVP, Frame, or Spectacles.
+Leverage ThreeJS WebXR.  It lives in the XR subdirectory and should be compatible with Quest 3, AVP, Frame, or Spectacles.  In the future, everything will have an XR type interface.  Count on that.
 
+TODO
+
+## TUI
+
+There will exist a TUI that can either be run on its own, or via XR (inside of a webview component).  The TUI will allow you to adjust the settings for the server mentioned earlier in the README.  These env settings should be updatable at runtime instead of being something that can only be touched on a remote server SSH.
+
+TODO
+
+## Attributions
 Written by SvenK, code licensed as CC0
 XR/AR portions by IoTone, Inc.
