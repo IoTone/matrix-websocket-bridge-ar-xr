@@ -63,7 +63,11 @@ As mentioned above, the original source example is here:
 	https://github.com/svenk/www-svenk.org/tree/main/src/chat 
 
 The client code "client.js" has been incorporated into this repo in the subdirectory lib.  
- 
+
+This library is provided from the above sorce for historical purposes, but isn't a general purpose client library but specifically designed to run on the web page "index.html" example provided.  
+
+A generic library called matrixeyeclient.js will be provided under the LIB directory.  TODO  
+
 ## Snap Spectacles UX
 
 Compatible with Spectacles 24.  See subfolder.  It will leverage the JS library mentioned in the previous section, and will port it for snap spectacles.  The spectacles version of this example is intended as a prototype to demonstrate alteratnives for decentralized messaging. The fact we can communicate with a room, we can ask a real person to reply, or we can build an interesting set of distributed AI / bot applications.

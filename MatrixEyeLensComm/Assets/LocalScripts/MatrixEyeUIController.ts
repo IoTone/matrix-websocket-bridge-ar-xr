@@ -2,7 +2,7 @@ import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interactio
 import {PinchButton} from "SpectaclesInteractionKit.lspkg/Components/UI/PinchButton/PinchButton"
 import {ToggleButton} from "SpectaclesInteractionKit.lspkg/Components/UI/ToggleButton/ToggleButton"
 import {ContainerFrame} from "SpectaclesInteractionKit.lspkg/Components/UI/ContainerFrame/ContainerFrame"
-
+// import {chat} from "./libmatrix-ws-bridge/matrixeyelensclient.d.ts"
 export enum LoginStatusCode {
     Success = 0x00, 
     NotLoggedIn = 0x10,
