@@ -57,15 +57,41 @@ export class MatrixEyeUIController extends BaseScriptComponent {
         this.timeoutInterval = this.createEvent("DelayedCallbackEvent");
         const somecb = (): void => {
             print("password mask timeout CB complete");
-            
         };
         this.timeoutInterval.bind(somecb);
         
         //
         // set up network related event listeners
-        //
-        this.matrixeyeclient.on('reconnecting', this.handleCustomEvent);
-        // this.matrixeyeclient.on(Typ, this.handleCustomEvent);
+        // Use this approach to easily update the UI without
+        // having to have UI things handled by the protocol
+        // library.  We also don't want to expose the websocket
+        // at the Lens App UI layer
+        // this.matrixeyeclient.on('reconnecting', this.handleConnectingEvent);
+        this.matrixeyeclient.on('reconnecting', (data) => {
+            globalThis.textLogger.log(`Event triggered! Received data: ${data}`);
+            this.setConnStatus("Connecting");
+        });
+        this.matrixeyeclient.on('reconnected', (data) =>{
+            globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+            // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+            this.connStatusText.text = "Connected";
+        });
+        this.matrixeyeclient.on('disconnected', (data) => {
+            globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+            // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+            this.connStatusText.text = "Disconnected";
+        });
+        this.matrixeyeclient.on('ondata', (data) => {
+            globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+            // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+        });
+        this.matrixeyeclient.on('connectionerror', (data) => {
+            globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+            // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+            this.connStatusText.text = "Connection Error: " + data;
+        });
+        // this.connStatusText.text = "foobar";
+        this.setConnStatus("foobar");
     }
 
     onStart() {
@@ -75,6 +101,7 @@ export class MatrixEyeUIController extends BaseScriptComponent {
             () => {
                 if (this.connectToggleCapsule.isToggledOn) {
                     globalThis.textLogger.log("connectToggleCapsule ON");
+                    this.matrixeyeclient.connect();
                 } else {
                     globalThis.textLogger.log("connectToggleCapsule OFF");
                 }
@@ -92,7 +119,7 @@ export class MatrixEyeUIController extends BaseScriptComponent {
             },
         );
 
-        this.matrixeyeclient.connect();
+       
     }
 
     //
@@ -101,15 +128,45 @@ export class MatrixEyeUIController extends BaseScriptComponent {
 
     //
     // event handlers
-    handleCustomEvent(data: string) {
+    // These don't work
+    handleOnDataEvent(data: JSON) {
+        globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+        // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+    }
+
+    handleConnectingEvent(data: string, thiz: BaseScriptComponent) {
         print(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
         // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+        // this.connStatusText.text = "Connecting";
+        
+        // thiz.setConnStatus("Connecting");
+    }
+
+    handleConnectedEvent(data: string) {
+        print(data);
+        globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+        // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+        this.connStatusText.text = "Connected";
+    }
+
+    handleDisconnectedEvent(data: string) {
+        globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+        // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+        this.connStatusText.text = "Disconnected";
+    }
+
+    handleConnectionErrorEvent(data: string) {
+        globalThis.textLogger.log(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+        // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+        this.connStatusText.text = "Connection Error: " + data;
     }
 
     //
     // Accessors
     //
-
+    setConnStatus(text: string) {
+        this.connStatusText.text = text;
+    }
 
     
 }

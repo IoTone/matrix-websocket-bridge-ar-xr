@@ -15,6 +15,7 @@ export interface MessageEvents {
     'reconnecting': (status: string) => void
     'reconnected': (status: string) => void
     'ondata': (data: JSON) => void
+    'connectionerror': (err: string, errCode: number) => void
 }
 
 
