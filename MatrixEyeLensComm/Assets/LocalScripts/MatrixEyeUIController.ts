@@ -2,6 +2,11 @@ import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interactio
 import {PinchButton} from "SpectaclesInteractionKit.lspkg/Components/UI/PinchButton/PinchButton"
 import {ToggleButton} from "SpectaclesInteractionKit.lspkg/Components/UI/ToggleButton/ToggleButton"
 import {ContainerFrame} from "SpectaclesInteractionKit.lspkg/Components/UI/ContainerFrame/ContainerFrame"
+import {MatrixEyeLib} from "./libmatrix-ws-bridge/MatrixEyeLib";
+import type {MessageEvents} from "./libmatrix-ws-bridge/MatrixEyeLib";
+import type TypedEmitter from './typed-emitter/TypedEmitter';
+
+
 // import {chat} from "./libmatrix-ws-bridge/matrixeyelensclient.d.ts"
 export enum LoginStatusCode {
     Success = 0x00, 
@@ -38,7 +43,7 @@ export class MatrixEyeUIController extends BaseScriptComponent {
     private configPasswordRequiredLength = 3;
     private loginStatus = LoginStatusCode.NotLoggedIn;
     private connectionStatus = ConnectionStatusCode.NotConnected;
-    
+    private matrixeyeclient = new MatrixEyeLib({}, this);
     // TODO: implement a session model
     
     onAwake() {
@@ -55,6 +60,12 @@ export class MatrixEyeUIController extends BaseScriptComponent {
             
         };
         this.timeoutInterval.bind(somecb);
+        
+        //
+        // set up network related event listeners
+        //
+        this.matrixeyeclient.on('reconnecting', this.handleCustomEvent);
+        // this.matrixeyeclient.on(Typ, this.handleCustomEvent);
     }
 
     onStart() {
@@ -80,11 +91,20 @@ export class MatrixEyeUIController extends BaseScriptComponent {
                 globalThis.textLogger.log("sendToggleCapsule");  
             },
         );
+
+        this.matrixeyeclient.connect();
     }
 
     //
     // Network Comms
     //
+
+    //
+    // event handlers
+    handleCustomEvent(data: string) {
+        print(`Event triggered! Received data: ${data}`);  // Use Lens Studio's print() for logging
+        // Add your Spectacles-specific logic here, e.g., update a material or trigger AR effects
+    }
 
     //
     // Accessors
