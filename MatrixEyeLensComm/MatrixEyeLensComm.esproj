@@ -15,7 +15,7 @@ metaInfo:
     []
   lensName: LocalJoostSamples
   lensDescriptors:
-    []
+    - EXPERIMENTAL_API
   lensApplicability:
     - Front
     - Back

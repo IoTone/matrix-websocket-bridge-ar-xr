@@ -7,8 +7,12 @@ const defaultOpts = {
     timeout: 2000,
     initialReconnectDelay: 1000, // 1 sec
     maxReconnectDelay: 32000, // 32 sec
-    uri: "ws://localhost:18080"
+    uri: "ws://localhost:18081"
 };
+
+const bridge_url_relative = "/ws"; // "/chat/socket";
+// bridge_url = new URL(bridge_url_relative, location.href);
+// bridge_url.protocol = bridge_url.protocol === "https:" ? "wss:" : "ws:";
 
 export interface MessageEvents {
     'disconnected': (err: string, errCode: number) => void
@@ -32,6 +36,7 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
     private webSocket?: WebSocket;
     private connected: boolean;
     private reconnecting: boolean = false;
+    private autoReconnect: boolean;
 
     /**
      * constructor
@@ -43,24 +48,33 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
         this.opts = options;
         this.reconnectTimer = new Interval(this.scriptComp);
         this.connected = false;
+        this.autoReconnect = true;
+        this.uri = this.opts.uri + bridge_url_relative;
     }
 
     connect() {
-        this.emit('reconnecting', 'starting reconnect');
-        /*
-        this.doConnect(this.opts.timeout)
-            .then((result: MQTTConnAck) => {
-                resolve(result);
-            }).catch((err) => {
-                reject(err);
-            });
-        */
+        this.emit('reconnecting', 'starting connect' + this.uri);
+        
+        this.doConnect(this.opts.timeout);
     }
 
 
-    /*
-    private doConnect(timeout: number): Promise<MQTTConnAck> {
-        return new Promise((resolve, reject) => {
+    private reconnect(): void {
+        if (!this.autoReconnect) {
+            return;
+        }
+
+        if (!this.connected) {
+            this.emit('reconnecting', 'Trying to reconnect...' + this.uri);
+            this.reconnecting = true;
+            this.doConnect(this.opts.timeout);
+        }
+    }
+    
+    private doConnect(timeout: number) {
+        try {
+            // globalThis.textLogger.log("connecting: " + this.uri);
+            print("connecting: " + this.uri);
             this.webSocket = this.internetModule.createWebSocket(this.uri);
             // XXX Need to convert handling of arraybuffer to blob            
             this.webSocket.binaryType = 'blob';
@@ -70,74 +84,101 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
                 let e: Error;
                 e = new Error('Websocket closed normally we think');
                 print("protocolhandler WebSocket.onclose");
-                // Do we need this?
-                // this.internalDisconnect(e);
+                this.internalDisconnect(e);
             };
 
             // PORTING
             // this.webSocket.onerror = (error: Event) => {
             this.webSocket.onerror = (event: WebSocketEvent) => {
-                print("protocolhandler WebSocket.onerror");                
+                globalThis.textLogger.log("protocolhandler WebSocket.onerror");                
                 // this.connectingPromise?.reject(error);
-                this.connectingPromise?.reject(new Error("WebSocket error for unknown reason"));
                 this.connected = false;
+                this.emit("connectionerror", "protocolhandler WebSocket.onerror", 10)
             };
-
+            
             // PORTING
             // this.webSocket.onmessage = (evt: MessageEvent) => {
             this.webSocket.onmessage = async (evt: WebSocketMessageEvent) => {
                 print("protocolhandler WebSocket.onmessage");
+                /*
+                appendMessage(JSON.parse(String(evt.data)), "recv")
+                notifyTitle()
+                playPling()
+                */
                 if (evt.data instanceof Blob) {
                     // Binary frame, can be retrieved as either Uint8Array or string
                     const bytes = await evt.data.bytes();
-                    // const text = await evt.data.text();
-                    this.messageReceived(bytes);
+                    const text = await evt.data.text();
+                    // this.messageReceived(bytes);
+                    // TODO: process message
+                    globalThis.textLogger.log(text);
+                } else {
+                    // Binary frame, can be retrieved as either Uint8Array or string
+                    const text = await evt.data; // It's text
+                    // this.messageReceived(bytes);
+                    // TODO: process message
+                    globalThis.textLogger.log(text);
                 }
             };
 
-            this.webSocket.onopen = () => {
+            this.webSocket.onopen = (event: WebSocketEvent) => {
                 print("protocohandler WebSocket.onopen");
-                this.protocolConnect();
+                this.emit("reconnected", "connected");
+                // this.webSocket.send('{msg: "yo yo", nickname: "heymama" }');
+                const jsonString = JSON.stringify({msg: "@Spectacles01 entered the room!", nickname: "Spectacles01" });
+                this.webSocket.send(jsonString);
+                // this.protocolConnect();
             };
-
-            this.connectingPromise = new Deferred<MQTTConnAck>();
-
+        } catch(err) {
             // PORTING
-            const timer = new Interval(this.scriptComp);
-            timer.setTimeoutInSec(() => {
-                this.disconnect({ reasonCode: MQTTDisconnectReason.Code.UnspecifiedError });
-            }, timeout);
-
-            this.connectingPromise?.getPromise()
-                .then((connack: MQTTConnAck) => {
-                    // PORTING
-                    // clearTimeout(timer);
-                    timer.cancelInterval();
-                    resolve(connack);
-                    this.connected = true;
-                    if (connack.properties && connack.properties.serverKeepAlive) {
-                        this.pinger = new Pinger(connack.properties.serverKeepAlive, this, this.scriptComp);
-                    }
-                    else {
-                        this.pinger = new Pinger(this.connectParams ? this.connectParams.keepAlive : 0, this, this.scriptComp);
-                    }
-
-                    if (connack.properties && connack.properties.receiveMaximum) {
-                        this.sendQoS12Quota = connack.properties.receiveMaximum;
-                    }
-
-                }).catch(
-                    (err) => {
-                        // PORTING
-                        // clearTimeout(timer);
-                        timer.cancelInterval();
-                        reject(err);
-                    }
-                );
-        });
+            // clearTimeout(timer);
+            // timer.cancelInterval();
+            this.emit("connectionerror", err, 11);
+        }
     }
-    */
+    
 
+    clearLocalState(): void {
+        if (this.webSocket) {
+            if (this.webSocket.readyState == 1) {
+                // PORTING
+                // this.webSocket.close(1000);
+                this.webSocket.close();
+            }
+            /*
+            this.webSocket.onopen = null;
+            this.webSocket.onmessage = null;
+            this.webSocket.onclose = null;
+            this.webSocket.onerror = null;
+
+            this.webSocket = undefined;
+            */
+        }
+        // this.pinger.cancel();
+        // delete this.remainingBuffer;
+        // this.remainingBuffer = undefined;
+        this.connected = false;
+        
+        // cancel the reconenct timer
+        if (this.reconnectTimer) {
+            // PORTING
+            // clearTimeout(this.reconnectTimer);
+            this.reconnectTimer.cancelInterval();
+        }
+    }
+
+    
+    internalDisconnect(e: Error): void | never {
+        this.clearLocalState();
+        this.emit('disconnected', 'Connection lost', 10);
+        const nextRetryInterval = this.opts.maxReconnectDelay // TODO: implement backoffthis.backoff.next();
+        // reconnect if needed
+        // PORTING
+        this.reconnectTimer.setTimeoutInSec(() => {
+            this.reconnect();
+        }, nextRetryInterval);
+        globalThis.textLogger.log(`Connection failed with error ${e.message}, will retry after " + ${nextRetryInterval / 1000} + " secs`);
+    }
 
 
 
