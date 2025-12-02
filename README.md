@@ -1,4 +1,29 @@
-# A little website chat tool that speaks into a Matrix channel
+This is a simple Matrix Client (not full featured) using a proxy to enable easy access to a configured matrix account/room and home server.  Intent is to build XR powered Clients for visual and also audio interfaces.  Hands-free communication may be explored down the road (voice or non-keyboard input)
+
+This project is an improper fork of https://github.com/svenk/matrix-websocket-bridge.  Because git-lfs was needed on the fork, it was not possible to push to a fork with git-lfs turned on.  Ridiculous.
+
+## Goals
+
+- Build futuristic clients for AR interfaces
+- explore new styles of communication
+
+## Status
+
+- Spectacles 24 Lens able to receive messages, text keyboard UX in progress
+- Generalized XR interface (testing on Quest 3S) has not yet started but is planned
+- :checkmark Go WebSocket proxy for matrix (insecure room) is functional and stable
+
+## Thought Experiments
+
+- TODO:  Livestream computer vision object classification, scene based prompt generation (what am I looking at?), and event based alerts (see fire, detect emergency) and send to matrix channel
+- TODO:  Full room and 1-1 chat support with arbitrary space for communication
+- TODO:  Alternative input method: grafitti style text input
+- TODO:  Voice to Text input
+- TODO:  Audio Transcription of incoming messages
+
+## Original Overview
+
+ A little website chat tool that speaks into a Matrix channel
 
 This repo provides a small, near-to-trivial websocket-to-matrix
 bridge. That is, the golang code is both a websocket server
