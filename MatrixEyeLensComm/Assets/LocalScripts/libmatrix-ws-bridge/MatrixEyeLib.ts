@@ -7,7 +7,7 @@ const defaultOpts = {
     timeout: 2000,
     initialReconnectDelay: 1000, // 1 sec
     maxReconnectDelay: 32000, // 32 sec
-    uri: "ws://localhost:18081"
+    uri: "ws://127.0.0.1:18081"
 };
 
 const bridge_url_relative = "/ws"; // "/chat/socket";
@@ -53,7 +53,7 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
     }
 
     connect() {
-        this.emit('reconnecting', 'starting connect' + this.uri);
+        this.emit('reconnecting', 'starting connect: ' + this.uri);
         
         this.doConnect(this.opts.timeout);
     }
@@ -177,7 +177,7 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
         this.reconnectTimer.setTimeoutInSec(() => {
             this.reconnect();
         }, nextRetryInterval);
-        globalThis.textLogger.log(`Connection failed with error ${e.message}, will retry after " + ${nextRetryInterval / 1000} + " secs`);
+        globalThis.textLogger.log(`Connection failed with error ${e.message}, will retry after ${nextRetryInterval / 1000} secs`);
     }
 
 

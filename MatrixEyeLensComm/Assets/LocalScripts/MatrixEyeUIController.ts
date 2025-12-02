@@ -47,10 +47,10 @@ export class MatrixEyeUIController extends BaseScriptComponent {
 
     // TODO: set these values via UI or TUI
     private matrixeyeclient = new MatrixEyeLib({
-        timeout: 2000,
+        timeout: 10000,
         initialReconnectDelay: 1000, // 1 sec
         maxReconnectDelay: 32000, // 32 sec
-        uri: "ws://localhost:18081"
+        uri: "ws://10.0.0.228:18081"
     }, this);
     // TODO: implement a session model
     
