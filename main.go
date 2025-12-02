@@ -121,7 +121,7 @@ func main() {
 
 		// cleanup: drop this thread mapping when ws closes
 		if threadHasBeenOpened {
-			line := ">>> client quitted: end of chat <<<"
+			line := ">>> client hangup: end of chat <<<"
 			if err := sendThreadText(ctx, cli, roomID, rootID, line, true); err != nil {
 				log.Warnf("send thread text: %v", err)
 			}
