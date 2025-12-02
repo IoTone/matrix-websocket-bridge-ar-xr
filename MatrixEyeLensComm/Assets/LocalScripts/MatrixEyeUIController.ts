@@ -5,7 +5,7 @@ import {ContainerFrame} from "SpectaclesInteractionKit.lspkg/Components/UI/Conta
 import {MatrixEyeLib} from "./libmatrix-ws-bridge/MatrixEyeLib";
 import type {MessageEvents} from "./libmatrix-ws-bridge/MatrixEyeLib";
 import type TypedEmitter from './typed-emitter/TypedEmitter';
-
+// import {ScrollView} from "SpectaclesInteractionKit.lspkg/Components/UI/ScrollView/ScrollView"
 
 // import {chat} from "./libmatrix-ws-bridge/matrixeyelensclient.d.ts"
 export enum LoginStatusCode {
@@ -33,30 +33,38 @@ export class MatrixEyeUIController extends BaseScriptComponent {
     @input
     clearToggleCapsule!: PinchButton
     @input
+    textinputToggleCapsule!: PinchButton
+    @input
     chatPanel: ContainerFrame
     @input
     connStatusText: Text
     @input
     connStats: Text
-
+    @input
+    myMessageText: Text
+    /* @input
+    chatScrollView: ScrollView */
+    
     private timeoutInterval: DelayedCallbackEvent | null = null
     private configPasswordRequiredLength = 3;
     private loginStatus = LoginStatusCode.NotLoggedIn;
     private connectionStatus = ConnectionStatusCode.NotConnected;
-
+    private options: TextInputSystem.KeyboardOptions | null = null;
+    private isEditingChat = false;
 
     // TODO: set these values via UI or TUI
     private matrixeyeclient = new MatrixEyeLib({
         timeout: 10000,
         initialReconnectDelay: 1000, // 1 sec
         maxReconnectDelay: 32000, // 32 sec
-        uri: "ws://10.0.0.228:18081"
+        uri: "ws://10.1.10.127:18081" // TODO: move this to a config UI
     }, this);
     // TODO: implement a session model
     
     onAwake() {
         print("onAwake()");
         
+        let textInputModule = require("LensStudio:TextInputModule");
         this.createEvent("OnStartEvent").bind(() => {
             this.onStart()
         })
@@ -100,9 +108,34 @@ export class MatrixEyeUIController extends BaseScriptComponent {
         });
         // this.connStatusText.text = "foobar";
         // this.setConnStatus("foobar");
+
+        
     }
 
     onStart() {
+        //
+        // Text Input stuff
+        //
+        this.options = new TextInputSystem.KeyboardOptions();
+        this.options.enablePreview = true;
+        this.options.keyboardType = TextInputSystem.KeyboardType.Text;
+        this.options.returnKeyType = TextInputSystem.ReturnKeyType.Return;
+        this.options.onTextChanged = (text: string, range: vec2) => {
+            this.myMessageText.text = text;
+            print("chat text changed: " + text);
+        };
+        // When the keyboard returns, print the current text
+        this.options.onKeyboardStateChanged = (isOpen: boolean) => {
+            if (!isOpen) {
+                print("closed keyboard with done " + this.myMessageText.text);
+            }
+        };
+        this.options.onError = (error: number, description: string) => {
+            // print("error oops");    
+            print(`Keyboard error: ${error} - ${description}`);
+        };
+        this.options.initialText = this.myMessageText.text;
+
         // TODO: Refactor into a better handler
         // https://developers.snap.com/lens-studio/api/lens-scripting/classes/Packages_SpectaclesInteractionKit_Components_UI_PinchButton_PinchButton.PinchButton.html#onbuttonpinched
         this.connectToggleCapsule.onStateChanged.add(
@@ -116,14 +149,35 @@ export class MatrixEyeUIController extends BaseScriptComponent {
                 
             },
         );
+
         this.clearToggleCapsule.onButtonPinched.add(
             () => {
-                globalThis.textLogger.log("clearToggleCapsule");  
+                // globalThis.textLogger.log("clearToggleCapsule");  
+                this.myMessageText.text = "";
             },
         );
         this.sendToggleCapsule.onButtonPinched.add(
             () => {
-                globalThis.textLogger.log("sendToggleCapsule");  
+                // globalThis.textLogger.log("sendToggleCapsule");
+                // TODO: change this to get a result
+                this.matrixeyeclient.sendMessage(this.myMessageText.text); 
+                this.myMessageText.text = "";
+            },
+        );
+        this.textinputToggleCapsule.onButtonPinched.add(
+            () => {
+                globalThis.textLogger.log("textinputToggleCapsule"); 
+                
+                if (this.isEditingChat) {
+                    this.isEditingChat = false;
+                    print("toggle keyboard off");
+                    global.textInputSystem.dismissKeyboard();
+                    
+                } else {
+                    this.isEditingChat = true;
+                    print("toggle keyboard on");
+                    global.textInputSystem.requestKeyboard(this.options);
+                }
             },
         );
 

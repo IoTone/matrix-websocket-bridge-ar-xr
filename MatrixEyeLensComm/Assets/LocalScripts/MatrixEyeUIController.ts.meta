@@ -31,7 +31,9 @@
     connStats: false
     connStatusText: false
     connectToggleCapsule: false
+    myMessageText: false
     sendToggleCapsule: false
+    textinputToggleCapsule: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -44,9 +46,11 @@
     - connectToggleCapsule: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       sendToggleCapsule: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       clearToggleCapsule: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
-      chatPanel: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      textinputToggleCapsule: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      chatPanel: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
       connStatusText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       connStats: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      myMessageText: !<reference.Text> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -54,6 +58,8 @@
     - // @input AssignableType connectToggleCapsule
     - // @input AssignableType_1 sendToggleCapsule
     - // @input AssignableType_2 clearToggleCapsule
-    - // @input AssignableType_3 chatPanel
+    - // @input AssignableType_3 textinputToggleCapsule
+    - // @input AssignableType_4 chatPanel
     - // @input Component.Text connStatusText
     - // @input Component.Text connStats
+    - // @input Component.Text myMessageText

@@ -58,6 +58,11 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
         this.doConnect(this.opts.timeout);
     }
 
+    sendMessage(txtmsg: string): void {
+        const jsonString = JSON.stringify({msg: `@Spectacles01 says ${txtmsg}`, nickname: "Spectacles01" });
+        this.webSocket.send(jsonString);
+    }
+
 
     private reconnect(): void {
         if (!this.autoReconnect) {
@@ -111,13 +116,32 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
                     const text = await evt.data.text();
                     // this.messageReceived(bytes);
                     // TODO: process message
-                    globalThis.textLogger.log(text);
+                    // globalThis.textLogger.log(text);
+                    // TODO: refactor
+                    try {
+                        var obj = JSON.parse(text);
+                        var sender = obj["nickname"];
+                        var message = obj["msg"];
+                        globalThis.textLogger.log(`${Date()} [${sender}]:> ${message}`)
+                    } catch(err) {
+
+                    }
                 } else {
                     // Binary frame, can be retrieved as either Uint8Array or string
                     const text = await evt.data; // It's text
+
                     // this.messageReceived(bytes);
                     // TODO: process message
-                    globalThis.textLogger.log(text);
+                    // globalThis.textLogger.log(text);
+                    // TODO: refactor
+                    try {
+                        var obj = JSON.parse(text);
+                        var sender = obj["nickname"];
+                        var message = obj["msg"];
+                        globalThis.textLogger.log(`${Date()} [${sender}]:> ${message}`)
+                    } catch(err) {
+
+                    }
                 }
             };
 
