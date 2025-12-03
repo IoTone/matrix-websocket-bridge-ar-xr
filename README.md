@@ -2,6 +2,8 @@ This is a simple Matrix Client (not full featured) using a proxy to enable easy 
 
 This project is an improper fork of https://github.com/svenk/matrix-websocket-bridge.  Because git-lfs was needed on the fork, it was not possible to push to a fork with git-lfs turned on.  Ridiculous.
 
+[![Watch an example on youtube](https://www.youtube.com/shorts/9BEVOT5upE8)
+
 ## Goals
 
 - Build futuristic clients for AR interfaces
