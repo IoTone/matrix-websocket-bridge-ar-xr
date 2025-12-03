@@ -35,6 +35,8 @@ export class MatrixEyeUIController extends BaseScriptComponent {
     @input
     textinputToggleCapsule!: PinchButton
     @input
+    settingsToggleCapsule!: PinchButton
+    @input
     chatPanel: ContainerFrame
     @input
     connStatusText: Text
@@ -42,6 +44,9 @@ export class MatrixEyeUIController extends BaseScriptComponent {
     connStats: Text
     @input
     myMessageText: Text
+    @input
+    uriSettings: Text3D
+
     /* @input
     chatScrollView: ScrollView */
     
@@ -50,15 +55,18 @@ export class MatrixEyeUIController extends BaseScriptComponent {
     private loginStatus = LoginStatusCode.NotLoggedIn;
     private connectionStatus = ConnectionStatusCode.NotConnected;
     private options: TextInputSystem.KeyboardOptions | null = null;
+    private options2: TextInputSystem.KeyboardOptions | null = null;
     private isEditingChat = false;
+    private isEditingSettings = false;
 
-    // TODO: set these values via UI or TUI
-    private matrixeyeclient = new MatrixEyeLib({
+    private defaultopts = {
         timeout: 10000,
         initialReconnectDelay: 1000, // 1 sec
         maxReconnectDelay: 32000, // 32 sec
-        uri: "ws://10.1.10.127:18081" // TODO: move this to a config UI
-    }, this);
+        uri: "ws://127.0.0.1:18081" // TODO: move this to a config UI
+    };
+    // TODO: set these values via UI or TUI
+    private matrixeyeclient = new MatrixEyeLib(this.defaultopts, this);
     // TODO: implement a session model
     
     onAwake() {
@@ -136,15 +144,39 @@ export class MatrixEyeUIController extends BaseScriptComponent {
         };
         this.options.initialText = this.myMessageText.text;
 
+        this.options2 = new TextInputSystem.KeyboardOptions();
+        this.options2.enablePreview = true;
+        this.options2.keyboardType = TextInputSystem.KeyboardType.Text;
+        this.options2.returnKeyType = TextInputSystem.ReturnKeyType.Return;
+        this.options2.onTextChanged = (text: string, range: vec2) => {
+            this.uriSettings.text = text;
+            print("chat text changed: " + text);
+        };
+        // When the keyboard returns, print the current text
+        this.options2.onKeyboardStateChanged = (isOpen: boolean) => {
+            if (!isOpen) {
+                print("closed keyboard with done " + this.myMessageText.text);
+                this.defaultopts["uri"] = this.uriSettings.text;
+                this.matrixeyeclient.setOpts(this.defaultopts);
+            }
+        };
+        this.options2.onError = (error: number, description: string) => {
+            // print("error oops");    
+            print(`Keyboard error: ${error} - ${description}`);
+        };
+        this.options2.initialText = this.uriSettings.text;
+
+
         // TODO: Refactor into a better handler
         // https://developers.snap.com/lens-studio/api/lens-scripting/classes/Packages_SpectaclesInteractionKit_Components_UI_PinchButton_PinchButton.PinchButton.html#onbuttonpinched
         this.connectToggleCapsule.onStateChanged.add(
             () => {
                 if (this.connectToggleCapsule.isToggledOn) {
-                    globalThis.textLogger.log("connectToggleCapsule ON");
+                    // globalThis.textLogger.log("connectToggleCapsule ON");
                     this.matrixeyeclient.connect();
                 } else {
-                    globalThis.textLogger.log("connectToggleCapsule OFF");
+                    // globalThis.textLogger.log("connectToggleCapsule OFF");
+                    this.matrixeyeclient.disconnect();
                 }
                 
             },
@@ -177,6 +209,20 @@ export class MatrixEyeUIController extends BaseScriptComponent {
                     this.isEditingChat = true;
                     print("toggle keyboard on");
                     global.textInputSystem.requestKeyboard(this.options);
+                }
+            },
+        );
+        this.settingsToggleCapsule.onButtonPinched.add(
+            () => {
+                // globalThis.textLogger.log("textinputToggleCapsule"); 
+                
+                if (this.isEditingSettings) {
+                    this.isEditingSettings = false;
+                    global.textInputSystem.dismissKeyboard();
+                    
+                } else {
+                    this.isEditingSettings = true;
+                    global.textInputSystem.requestKeyboard(this.options2);
                 }
             },
         );

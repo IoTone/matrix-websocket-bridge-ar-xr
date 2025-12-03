@@ -16,6 +16,7 @@ const bridge_url_relative = "/ws"; // "/chat/socket";
 
 export interface MessageEvents {
     'disconnected': (err: string, errCode: number) => void
+    'disconnecting': (status: string) => void
     'reconnecting': (status: string) => void
     'reconnected': (status: string) => void
     'ondata': (data: JSON) => void
@@ -54,15 +55,31 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
 
     connect() {
         this.emit('reconnecting', 'starting connect: ' + this.uri);
-        
-        this.doConnect(this.opts.timeout);
+        if (!this.connected) {
+            this.doConnect(this.opts.timeout);
+        }
     }
 
     sendMessage(txtmsg: string): void {
+        print("Sending message: " + txtmsg);
         const jsonString = JSON.stringify({msg: `@Spectacles01 says ${txtmsg}`, nickname: "Spectacles01" });
-        this.webSocket.send(jsonString);
+        if (this.connected) {
+            this.webSocket.send(jsonString);
+            globalThis.textLogger.log(jsonString);
+        }
     }
 
+    disconnect() {
+        this.emit('disconnecting', 'Disconnecting');
+        if (this.connected) {
+            this.webSocket.close();
+        }
+    }
+
+    setOpts(options: Partial<Options>): void {
+        this.opts = options;
+        this.uri = options["uri"] + bridge_url_relative;
+    }
 
     private reconnect(): void {
         if (!this.autoReconnect) {
@@ -70,7 +87,7 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
         }
 
         if (!this.connected) {
-            this.emit('reconnecting', 'Trying to reconnect...' + this.uri);
+            this.emit('reconnecting', 'Trying to reconnect...' + this.opts.uri);
             this.reconnecting = true;
             this.doConnect(this.opts.timeout);
         }
@@ -147,8 +164,10 @@ export class MatrixEyeLib extends (EventEmitter as new () => TypedEmitter<Messag
 
             this.webSocket.onopen = (event: WebSocketEvent) => {
                 print("protocohandler WebSocket.onopen");
+                this.connected = true;
                 this.emit("reconnected", "connected");
                 // this.webSocket.send('{msg: "yo yo", nickname: "heymama" }');
+                
                 const jsonString = JSON.stringify({msg: "@Spectacles01 entered the room!", nickname: "Spectacles01" });
                 this.webSocket.send(jsonString);
                 // this.protocolConnect();
