@@ -2,7 +2,7 @@ This is a simple Matrix Client (not full featured) using a proxy to enable easy 
 
 This project is an improper fork of https://github.com/svenk/matrix-websocket-bridge.  Because git-lfs was needed on the fork, it was not possible to push to a fork with git-lfs turned on.  Ridiculous.
 
-[![Watch an example on youtube](https://www.youtube.com/shorts/9BEVOT5upE8)
+[![Watch an example on youtube](https://private-user-images.githubusercontent.com/64202/521673324-3c8235a9-d1b9-4219-a762-e5de084594e7.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjQ3NDY1MjQsIm5iZiI6MTc2NDc0NjIyNCwicGF0aCI6Ii82NDIwMi81MjE2NzMzMjQtM2M4MjM1YTktZDFiOS00MjE5LWE3NjItZTVkZTA4NDU5NGU3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTEyMDMlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUxMjAzVDA3MTcwNFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThjN2RlZDcyZjc1MGMxYmFmYTUyMzE2Y2IzMTM4Y2M5NTAzMzUzZWZmODBmM2E1NTQ2MjczZThjMDQ1YzExYWUmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.kq5DI5b-vU-2t8LpYhlj8wlHUF-_4PZEZ_d9KBPZJQ0)](https://www.youtube.com/shorts/9BEVOT5upE8)
 
 ## Goals
 
